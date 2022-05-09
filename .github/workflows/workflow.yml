@@ -26,23 +26,18 @@ jobs:
         name: autocommit
         with:
           commit_message: ":construction_worker: Rendering rmd files"
-  lint:
+  lint-project:
     runs-on: ubuntu-latest
-#    needs: [render-rmarkdown]
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: lintr
-#      - name: Pull modifications
-#        run: git pull
-      - name: Lint
-        run: lintr::lint_package()
+      - name: Install lintr
+        run: install.packages("lintr")
         shell: Rscript {0}
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        name: autocommit
-        with:
-          commit_message: ":construction_worker: Lintr modifications"
+      - name: Lint root directory
+        run: lintr::lint_dir()
+        shell: Rscript {0}
