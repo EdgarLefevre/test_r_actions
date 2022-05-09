@@ -61,7 +61,7 @@ jobs:
             ${{ runner.os }}-styler-
             ${{ runner.os }}-
       - name: Style
-        run: styler::style_dir(pkg="src", filetype = c(".r", ".R", ".Rmd", ".Rmarkdown", ".Rnw"))
+        run: styler::style_dir(filetype = c(".r", ".R", ".Rmd", ".Rmarkdown", ".Rnw"))
         shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
