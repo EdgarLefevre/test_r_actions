@@ -25,25 +25,6 @@ jobs:
         name: autocommit
         with:
           commit_message: ":construction_worker: Linting"
-  lint:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          use-public-rspm: true
-      - name: Install lintr
-        run: install.packages("lintr")
-        shell: Rscript {0}
-      - name: Lint
-        run: lintr::lint_package(path="src")
-        shell: Rscript {0}
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        name: autocommit
-        with:
-          commit_message: ":construction_worker: Linting 2"
   style:
     runs-on: ubuntu-latest
     env:
@@ -71,7 +52,6 @@ jobs:
             sep = ""
           )
         shell: Rscript {0}
-
       - name: Cache styler
         uses: actions/cache@v2
         with:
@@ -81,7 +61,7 @@ jobs:
             ${{ runner.os }}-styler-
             ${{ runner.os }}-
       - name: Style
-        run: styler::style_pkg(pkg="src", filetype = c(".r", ".R", ".Rmd", ".Rmarkdown", ".Rnw"))
+        run: styler::style_dir(pkg="src", filetype = c(".r", ".R", ".Rmd", ".Rmarkdown", ".Rnw"))
         shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
