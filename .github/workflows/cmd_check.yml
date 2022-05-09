@@ -34,9 +34,9 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-      - name: Install rcmdcheck
+      - name: Install testhat
         run: install.packages("rcmdcheck")
         shell: Rscript {0}
-      - uses: r-lib/actions/check-r-package@v2
-        with:
-          upload-snapshots: true
+      - name: Run tests
+        run: testthat::test_dir()
+        shell: Rscript {0}
