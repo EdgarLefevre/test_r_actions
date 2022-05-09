@@ -38,7 +38,7 @@ jobs:
         run: install.packages("lintr")
         shell: Rscript {0}
       - name: Lint
-        run: lintr::lint_package("src")
+        run: lintr::lint_package(path="src")
         shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
@@ -81,7 +81,7 @@ jobs:
             ${{ runner.os }}-styler-
             ${{ runner.os }}-
       - name: Style
-        run: styler::style_pkg(filetype = c(".r", ".R", ".Rmd", ".Rmarkdown", ".Rnw"))
+        run: styler::style_pkg(pkg="src", filetype = c(".r", ".R", ".Rmd", ".Rmarkdown", ".Rnw"))
         shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
