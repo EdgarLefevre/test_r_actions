@@ -12,10 +12,10 @@ library(biomaRt)
 library(patchwork)
 library(RColorBrewer)
 
-args <- commandArgs(trailingOnly = TRUE)
-gv <- yaml::read_yaml(args[1])
+args = commandArgs(trailingOnly = TRUE)
+gv = yaml::read_yaml(args[1])
 
-metadatafn <- gv$metadatafile
+metadatafn = gv$metadatafile
 cfn <- gv$countsfile
 conditionLEVELS <- gv$conditionLEVELS
 reqcontrast <- gv$requiredcontrast
