@@ -6,26 +6,6 @@ name: Workflow
 on: [push, pull_request]
 
 jobs:
-  render-rmarkdown:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: r-lib/actions/setup-pandoc@v1
-      - uses: r-lib/actions/setup-r@v2
-      - uses: r-lib/actions/setup-renv@v1
-      - name: Render Rmarkdown files
-        run: |
-          
-          RMD_PATH=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '[.]Rmd$'))
-          Rscript -e 'for (f in commandArgs(TRUE)) if (file.exists(f)) rmarkdown::render(f)' ${RMD_PATH[*]}
-          
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        name: autocommit
-        with:
-          commit_message: ":construction_worker: Rendering rmd files"
   lint-project:
     runs-on: ubuntu-latest
     env:
@@ -58,7 +38,7 @@ jobs:
         run: install.packages("lintr")
         shell: Rscript {0}
       - name: Lint
-        run: lintr::lint_package()
+        run: lintr::lint_package("src")
         shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
@@ -101,7 +81,7 @@ jobs:
             ${{ runner.os }}-styler-
             ${{ runner.os }}-
       - name: Style
-        run: styler::style_pkg(filetype = c(".R", ".Rmd", ".Rmarkdown", ".Rnw"))
+        run: styler::style_pkg(filetype = c(".r", ".R", ".Rmd", ".Rmarkdown", ".Rnw"))
         shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
