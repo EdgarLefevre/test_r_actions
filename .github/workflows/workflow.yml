@@ -6,25 +6,6 @@ name: Workflow
 on: [push, pull_request]
 
 jobs:
-  lint-project:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          use-public-rspm: true
-      - name: Install lintr
-        run: install.packages("lintr")
-        shell: Rscript {0}
-      - name: Lint root directory
-        run: lintr::lint_dir()
-        shell: Rscript {0}
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        name: autocommit
-        with:
-          commit_message: ":construction_worker: Linting"
   style:
     runs-on: ubuntu-latest
     env:
@@ -67,3 +48,19 @@ jobs:
         name: autocommit
         with:
           commit_message: ":construction_worker: Code formatting"
+  lint-project:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    needs: [style]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - name: Install lintr
+        run: install.packages("lintr")
+        shell: Rscript {0}
+      - name: Lint root directory
+        run: lintr::lint_dir()
+        shell: Rscript {0}
