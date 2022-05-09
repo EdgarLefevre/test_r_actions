@@ -35,7 +35,9 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
       - name: Install testhat
-        run: install.packages("testthat")
+        run: |
+          install.packages("testthat")
+          install.packages("stringr")
         shell: Rscript {0}
       - name: Run tests
         run: testthat::test_dir(path = "tests/testthat/")
