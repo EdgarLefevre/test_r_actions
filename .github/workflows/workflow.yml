@@ -8,8 +8,6 @@ on: [push, pull_request]
 jobs:
   style:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -50,8 +48,6 @@ jobs:
           commit_message: ":construction_worker: Code formatting"
   lint-project:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     needs: [style]
     steps:
       - uses: actions/checkout@v2
