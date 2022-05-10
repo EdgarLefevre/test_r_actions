@@ -97,11 +97,13 @@ jobs:
         shell: Rscript {0}
       - name: Create dummy file for documentation
         run: |
-          echo "Package: ${{ github.repository }}\nVersion: 1.0.0\n" > DECSRIPTION
+          echo "Package: ${{ github.repository }} \nVersion: 1.0.0\n" > DECSRIPTION
           ls
           cat DECSRIPTION
       - name: Render doc
-        run: roxygen2::roxygenize()
+        run: |
+          ls
+          roxygen2::roxygenize()
         shell: Rscript {0}
       - name: Remove dummy file
         run: rm DECSRIPTION
