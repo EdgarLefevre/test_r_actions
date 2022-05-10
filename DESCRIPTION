@@ -14,4 +14,5 @@ Imports:
     tidyverse,
     biomaRt,
     patchwork,
-    RColorBrewer
+    RColorBrewer,
+    ggplot2
