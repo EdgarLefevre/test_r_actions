@@ -103,8 +103,7 @@ jobs:
       - name: Render doc
         run: |
           ls
-          roxygen2::roxygenize()
-        shell: Rscript {0}
+          Rscript -e roxygen2::roxygenize()
       - name: Remove dummy file
         run: rm DECSRIPTION
       - uses: stefanzweifel/git-auto-commit-action@v4
