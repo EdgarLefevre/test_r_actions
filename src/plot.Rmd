@@ -1,0 +1,688 @@
+---
+title       : Analyse Exploratoire de Données ; Graphiques
+subtitle    : Formation NGS avec R - Octobre 2016
+author      : Elodie Darbo, Aurélien Barré
+job         : Centre de Bioinformatique de Bordeaux
+logo        : Logo_bleu.png
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : default      #
+url:
+  lib: ../../libraries
+  assets: ../../assets
+
+widgets     : [mathjax,quiz,bootstrap]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+
+---
+# temp
+
+```{r setup, echo = F, cache = F,results='hide',errors='hide',warnings='hide'}
+suppressWarnings(library(knitr,quietly=T))
+suppressWarnings(library(ggplot2,quietly=T))
+suppressWarnings(library(dplyr,quietly=T))
+suppressWarnings(library(ggbio,quietly=T))
+suppressWarnings(library(reshape2,quietly=T))
+# make this an external chunk that can be included in any file
+# cat(5+5)
+options(width = 100)
+options(digits=2)
+opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi=200, tidy = F, cache.path = 'cache/', fig.path = 'fig/')
+opts_chunk$set(tidy = FALSE)
+
+knit_hooks$set(document = function(x){
+  gsub("```\n*```r*\n*", "", x)
+})
+```
+
+--- .segue .nobackground .dark
+## Les questions d'analyse de données
+* Descriptive
+* Explorative
+* Inferentielle
+* Predictive
+* Causale
+
+<div class='source'>Jeff Leek, Data analysis</div>
+
+---
+## Descriptive
+* Première étapes
+* Résumé des données
+* Exemples:
+	* Données recensement, sondages,
+	* Mean allele frequency
+	* Moyenne d'expression d'un gène
+
+---
+## Explorative
+* Pour décourvrir de nouvelles connexions
+* Pour déterminer de futures analyses
+* Ne doivent pas être généralisé/ utilisé pour la prédiction
+* __Se base sur l'analyse de donées tabulées, de graphiques et de techniques d'analyses supervisées__
+
+---
+## Inferentielle
+* À partir d'un sous-échantilonnage, généraliser à la population
+* Déterminer autant la statistique (e.g. moyenne) que la certitude (e.g. intervalle de confiance)
+
+---
+## Prédictive
+* Utiliser des mesures pour prédire la valeur d'autres mesures
+* Est indépendant de la notion de causation
+	* X peut très bien prédire Y sans être causallement lié a Y
+	* La vente de glaces est un excellent prédicteur du risque de noyade (Variable confondante: l'été)
+
+* Exemple:
+	* Recommendations amazon
+	* Signature prognostique basée sur des données transcriptomique
+
+---
+## Causale
+* Comprendre l'influence d'une variable sur une autre
+* Nécessite des experimentations propesctives et randomisées
+* Exemples
+	* Essais cliniques
+	* Conséquences phénotypique de facteurs expérimentaux
+	* Conséquences sur le transcriptome de facteurs expérimentaux
+
+
+
+
+
+
+--- .segue .nobackground .dark
+
+## Gaphiques R
+
+---
+Système graphique de R:
+* Peut être personalisé à l'infini
+* Peut générer des graphiques de très haute résolution (publication, print etc.)
+* Graphiques totalement reproductibles et automatisables
+* Début: en utilisant exclusivement les fonctions par défaut de R
+
+---
+## Liens
+* [CRAN Tast view] (http://cran.r-project.org/web/views/Graphics.html)
+* [Musée des graphiques](http://rgraphgallery.blogspot.fr) : Avec code source de chacun
+* [Manuel graphique de R](http://rgm3.lab.nig.ac.jp/RGM/R_image_list?page=1603&init=true)
+* [Manuel des arguments de graphiques en Français](http://pbil.univ-lyon1.fr/R/pdf/tdr75.pdf)
+
+---
+## Quelques graphiques de bases
+* `plot` : X vs Y; ou fonction spécifique à l'objet (fonction __surchargée__)
+* `pairs` : Affichage de données multivariées
+* `barplot`: Hauteur vs X
+* `boxplot`: Boites à moustaches, statistiques de distributions
+* `hist`,`density`: Distributions vs X
+* `dotchart`: Alternative efficace aux barplots
+* `heatmap`: Grille de points
+
+
+
+---
+## Données exemples
+Nous allons illustrer les différents graphiques possibles à l'aide du jeu de données `data(CO2)` fourni avec R. Il s'agit de la consommation de $CO_2$ de 6 plant
+es du Quebec et de six plantes du Mississippi en fonction de la concentration en $CO_2$ ambient et dont la moitié furent congelées la veille.
+```{r }
+data(CO2)
+CO2=tbl_df(CO2)
+CO2
+```
+---
+## Scatter plot / Nuage de points
+
+```{r out.width="500px"}
+plot(CO2$conc,CO2$uptake,xlab="CO2 ambient",ylab="CO2 consommé",main="CO2 dataset")
+```
+
+---
+## Scatter plot / Nuage de points avec étiquettes
+
+```{r out.width="500px"}
+point_color = ifelse(CO2$Type=="Quebec","red","blue")
+plot(CO2$conc,CO2$uptake,xlab="CO2 ambient",ylab="CO2 consommé",main="CO2 dataset",col=point_color,pch=20)
+text(CO2$conc+20,CO2$uptake,CO2$Plant,cex=0.5)
+```
+
+--- &twocol
+## Scatter plot: paramètrage
+*** =left
+
+
+
+```{r eval=T,echo=F,out.width="500px"}
+point_color = ifelse(CO2$Type=="Quebec","red","blue")
+
+op <- par(mar=c(4,4,4,4), bg="grey90") #marges et couleur du fond
+plot(CO2$conc,CO2$uptake,xlab="CO2 ambient",ylab="CO2 consommé",main="CO2 dataset",
+     col=point_color,pch=20, # Type de point
+     type="p",
+     cex.lab=1.2,cex.axis=0.4,lwd=4,#line width,sizes
+     sub="Sous-titre")
+text(CO2$conc+20,CO2$uptake,CO2$Plant,cex=0.5) #étiquettes
+grid(5, 5, lwd = 2,col="black") # Grille
+par(op)# Remise a zero pour plot suivant
+```
+*** =right
+```{r eval=F}
+op <- par(mar=c(4,4,4,4), bg="grey90") #marges, fond
+plot(CO2$conc,CO2$uptake,
+	 xlab="CO2 ambient",ylab="CO2 consommé",
+	 main="CO2 dataset",
+     col=point_color,pch=20, # Type de point
+     type="p",
+     cex.lab=1.2,cex.axis=0.4,lwd=4,#line width
+     sub="Sous-titre")
+text(CO2$conc+20,CO2$uptake,CO2$Plant,cex=0.5) #étiquettes
+grid(5, 5, lwd = 2,col="black") # Grille
+par(op)# Remise a zero pour plot suivant
+```
+Pour les détails: `?par` ou [Manuel](http://pbil.univ-lyon1.fr/R/pdf/tdr75.pdf)
+
+
+--- &twocol
+## Scatter plot: regresssion linéaire
+*** =left
+
+```{r eval=T,echo=F,out.width="500px"}
+point_color = ifelse(CO2$Type=="Quebec","red","blue")
+my_reg_line = lm(uptake ~ conc,data=CO2);
+plot(CO2$conc,CO2$uptake,xlab="CO2 ambient",ylab="CO2 consommé",main="CO2 dataset",
+     col=point_color,pch=20)
+abline(my_reg_line,lwd=2,col="cyan")
+text(CO2$conc+20,CO2$uptake,CO2$Plant,cex=0.5) #étiquettes
+grid(5, 5, lwd = 2,col="black") # Grille
+```
+*** =right
+```{r eval=F,echo=T}
+point_color = ifelse(CO2$Type=="Quebec","red","blue")
+my_reg_line = lm(uptake ~ conc,data=CO2);
+plot(CO2$conc,CO2$uptake,
+     xlab="CO2 ambient",
+     ylab="CO2 consommé",main="CO2 dataset",
+     col=point_color,pch=20)
+abline(my_reg_line,lwd=2,col="cyan")
+
+text(CO2$conc+20,CO2$uptake,CO2$Plant,cex=0.5,xlog=T) #étiquettes
+grid(5, 5, lwd = 2,col="black") # Grille
+```
+
+---
+## Scatter plot
+<span class='definition'>Quizz</span>
+Tracez un nuage de points des données `iris$Sepal.Length`(y) vs `iris$Sepal.Width`(x) en coloriant les points par type de plantes (`Species`) et en limitant le c
+adre d'affichage a x : 2.0 ... 4.0 et y : 4.0 ... 6.0 (`xlim`,`ylim`)
+
+*** =pnotes
+
+```{r ,out.width="500px"}
+colors = c("orchid","firebrick2","forestgreen","black")
+plot(iris$Sepal.Width,iris$Sepal.Length,col=colors[iris$Species],xlim=c(2,4),ylim=c(4,6),pch=20)
+#legend(3.5,4.8,levels(iris$Species),cex=0.7,col=colors,pch=1)
+legend('topright',levels(iris$Species),cex=0.7,col=colors,pch=20)
+```
+
+---
+## Barplots
+On prépare les données en les résumant a des moyennes et en selectionnant les concentrations environnantes:
+```{r }
+co2_chilled=CO2 %>% group_by(Type,Treatment,conc) %>%
+  summarize(mean_uptake=mean(uptake),sd_uptake=sd(uptake),mean_plus_sd=mean_uptake+sd_uptake) %>% filter(Treatment=="chilled",conc<=350)
+```
+On transforme ce tableau en un tableau en colonne de type matrice:
+```{r,out.width="100px"}
+co2_chilled_compared=dcast(co2_chilled,conc~Type,value.var="mean_uptake")
+co2_chilled_compared_mat=as.matrix(co2_chilled_compared[,-c(1)])
+barplot(co2_chilled_compared_mat,beside=T)
+```
+
+---
+## Barplots
+On trace le barplot annoté avec la légende:
+```{r,out.width="400px"}
+colors <- c("grey80","grey60","grey40","grey20")
+barplot(co2_chilled_compared_mat,beside=T,xlim=c(0,10),ylim=c(0,60),col=colors,main="CO2 par origine en fonction de la concentration environnante",main.cex=0.3)
+legend(x="topright",legend=co2_chilled_compared$conc,fill=colors,bty="n",horiz=F,cex=0.8,x.intersp=0.2,y.intersp=0.5)
+```
+
+---
+## Barplots
+* Faites un barplot permettant de comparer les consommations moyennes de CO2 par concentration environnante en fonction de l'origine
+
+*** =pnotes
+
+```{r}
+co2_chilled_compared2=dcast(co2_chilled,Type~conc,value.var="mean_uptake")
+co2_chilled_compared_mat2=as.matrix(co2_chilled_compared2[,-c(1)])
+colors2 <- c("firebrick","forestgreen")
+barplot(co2_chilled_compared_mat2,beside=T,xlim=c(0,14),ylim=c(0,60),col=colors,main="CO2 par origine en fonction de la concentration environnante")
+legend(x="topright",legend=co2_chilled_compared2$Type,fill=colors,bty="n",horiz=F,cex=0.8,x.intersp=0.2,y.intersp=0.5)
+```
+
+---
+## Barplots
+Nous allons afficher les valeurs observées au dessus de chaque colonne :
+```{r,out.width="300px"}
+colors <- c("grey80","grey60","grey40","grey20")
+barplot(co2_chilled_compared_mat,beside=T,xlim=c(0,10),ylim=c(0,60),col=colors,main="CO2 par origine en fonction de la concentration environnante")
+legend(x="topright",legend=co2_chilled_compared$conc,fill=colors,bty="n",horiz=F,cex=0.8,x.intersp=0.2,y.intersp=0.5)
+text(labels=round(as.vector(co2_chilled_compared_mat),2),x=seq(1.5,9,by=1)+rep(c(0,1),each=4),y=as.vector(co2_chilled_compared_mat)+3)
+```
+
+---
+## Barplots
+Nous allons afficher les barres indiquant la déviation standard
+```{r,out.width="300px"}
+co2_chilled_compared_sd=dcast(co2_chilled,conc~Type,value.var="mean_plus_sd")
+co2_chilled_compared_sd_mat=as.matrix(co2_chilled_compared_sd[,-c(1)])
+colors <- c("grey80","grey60","grey40","grey20")
+bar <- barplot(co2_chilled_compared_mat,beside=T,xlim=c(0,10),ylim=c(0,60),col=colors,main="CO2 par origine en fonction de la concentration environnante")
+arrows(as.vector(bar),as.vector(co2_chilled_compared_mat),as.vector(bar),as.vector(co2_chilled_compared_sd_mat),length=0.15,angle=90)
+legend(x="topright",legend=co2_chilled_compared$conc,fill=colors,bty="n",horiz=F,cex=0.8,x.intersp=0.2,y.intersp=0.5)
+text(labels=round(as.vector(co2_chilled_compared_mat),2),x=seq(1.5,9,by=1)+rep(c(0,1),each=4),y=as.vector(co2_chilled_compared_mat)+10)
+```
+
+
+
+---
+## Histogrammes & densité
+Affichage de distributions
+```{r eval=T,out.width="500px"}
+mon_histo <- hist(CO2$uptake,nclass=50,plot=F)
+plot(mon_histo,main="Distribution de la consommation",xlab="CO2 consommé")
+```
+---
+## Histogrammes & densité
+```{r,out.width="500px"}
+plot(density(CO2$uptake))
+```
+
+---
+## Boxplot: affichage de quantiles
+<center>
+<img class=center src="../../assets/img/boxplot.pdf" width=650px />
+</center>
+
+<div class='source'>Biostatistical Design and Analysis Using R, Logan </div>
+
+
+---
+## Boxplot: affichage de quantiles
+
+```{r out.width="700px", fig.width=12}
+boxplot(CO2$uptake ~ CO2$Type*CO2$Treatment,col="dodgerblue4")
+```
+
+--- &twocol
+## Dotchart: Alternative au bar plot
+
+*** =left
+
+```{r out.width="500px",echo=F}
+colors = c("dodgerblue","firebrick2")
+
+sorted_co2_chilled=CO2 %>%
+	filter(Treatment=="chilled") %>%
+	arrange(uptake)
+
+with(sorted_co2_chilled,
+	dotchart(uptake,col=colors[Type],
+			 labels=paste(Type,conc),pch=19,
+			 main="Chilled"))
+```
+*** =right
+
+```{r out.width="500px",echo=T,eval=F}
+colors = c("dodgerblue","firebrick2")
+
+sorted_co2_chilled=CO2 %>%
+	filter(Treatment=="chilled") %>%
+	arrange(uptake)
+
+with(sorted_co2_chilled,
+	dotchart(uptake,col=colors[Type],
+			 labels=paste(Type,conc),pch=19,
+			 main="Chilled"))
+```
+
+
+--- &twocol
+## Dotchart: Alternative au bar plot
+
+*** =left
+
+```{r out.width="500px",echo=F}
+colors = c("dodgerblue","firebrick2")
+
+sorted_co2_chilled=CO2 %>%
+	filter(Treatment=="chilled") %>%
+	arrange(uptake)
+
+sorted_co2_non_chilled=CO2 %>%
+	filter(Treatment=="nonchilled") %>%
+	arrange(uptake)
+
+par(mfrow=c(1,2))
+with(sorted_co2_chilled,
+	dotchart(uptake,col=colors[Type],
+			 labels=paste(Type,conc),pch=19,
+			 main="Chilled"))
+
+with(sorted_co2_non_chilled,
+	dotchart(uptake,col=colors[Type],
+			labels=paste(Type,conc),pch=19,
+			main="Non chilled"))
+```
+*** =right
+
+```{r out.width="500px",echo=T,eval=F}
+colors = c("dodgerblue","firebrick2")
+
+sorted_co2_chilled=CO2 %>%
+	filter(Treatment=="chilled") %>%
+	arrange(uptake)
+
+sorted_co2_non_chilled=CO2 %>%
+	filter(Treatment=="nonchilled") %>%
+	arrange(uptake)
+
+par(mfrow=c(1,2))
+with(sorted_co2_chilled,
+	dotchart(uptake,col=colors[Type],
+			 labels=paste(Type,conc),pch=19,
+			 main="Chilled"))
+
+with(sorted_co2_non_chilled,
+	dotchart(uptake,col=colors[Type],
+			labels=paste(Type,conc),pch=19,
+			main="Non chilled"))
+```
+
+--- .segue .nobackground .dark
+
+## Gaphiques: ggplot2 / qplot
+
+---
+## GGPlot
+* Implémentation de la langue des graphiques (_language of graphics_)
+* Abstraction du processus de construction d'un graphique
+<center>
+<img class=center src="../../assets/img/gg_overview.png" width=550px />
+</center>
+
+---
+## GGPlot
+* Particulièrement adapté au prototypage de figures exploratoires pour données multi-variées
+	* Déterminer les groupes de données
+	* Déterminer les tendances
+	* Déterminer les associations entre variables
+* Éléments qui devraient ensuite être testés formellement (statistiques, expérience contrôlée, etc.)
+
+--- &twocol
+## GGPlot
+On veut explorer la corrélation entre `Petal.Width` et `Petal.Length` des donées `iris`.
+* Avec `Petal.Width` en `x` et `Petal.Length` en `y` (aesthetics) représentés à l'aide de points (`geom`)
+*** =left
+```{r eval=F}
+library(ggplot2)
+qplot(Petal.Width,Petal.Length,data=iris,geom="point")
+```
+
+* Dont la couleur dépend de l'espéce (`aes`)
+```{r eval=F}
+qplot(Petal.Width,Petal.Length,data=iris,geom="point",colour=Species)
+```
+
+*** =right
+```{r eval=T,echo=F}
+qplot(Petal.Width,Petal.Length,data=iris,geom="point",colour=Species)
+```
+
+--- &twocol
+*** =left
+Dont la taille dépend de Sepal.Length (aes)
+```{r eval=F}
+qp=qplot(Petal.Width,Petal.Length,data=iris,
+  		 geom="point",colour=Species,size=Sepal.Length)
+```
+
+* En utilisant un autre mapping pour les couleurs (scales)
+```{r eval=F}
+qp=qp+scale_colour_brewer(type="div",palette=7)
+```
+* Dans un espace log-log (scales)
+```{r eval=F}
+qp=qp+scale_y_log10()+scale_x_log10()
+print(qp)
+```
+
+*** =right
+```{r eval=T,echo=F}
+qplot(Petal.Width,Petal.Length,data=iris,geom="point",colour=Species,size=Sepal.Length)+scale_colour_brewer(type="div",palette=7)+scale_y_log10()+scale_x_log10()
+```
+
+---
+## Résumé
+
+```{r out.width="450px", eval=F}
+qp=qplot(Petal.Width, #x
+      Petal.Length, #y
+      data=iris, #les données
+      geom="point", #le graphique / la géométrie
+    colour=Species, #couleur
+    size=Sepal.Length #taille
+)
+qp=qp+scale_colour_brewer(type="div",palette=7) # echelle de couleur
+qp=qp+scale_y_log10()+scale_x_log10() # echelle des x&y
+print(qp) # afficher le graphique
+
+```
+
+--- &twocol
+*** =left
+Avec une courbe de regression y~x
+
+```{r,out.width="500px",eval=F}
+# qp+geom_smooth(method="lm",aes(group=1))
+# Ou bien
+qplot(Petal.Width, #x
+      Petal.Length, #y
+      data=iris, #les données
+      colour=Species, #couleur
+      size=Sepal.Length,
+      geom=c("point","smooth"), #le graphique
+      method="lm",
+      group=1
+)
+```
+*** =right
+```{r,out.width="500px",echo=F,eval=T}
+
+qplot(Petal.Width, #x
+      Petal.Length, #y
+      data=iris, #les données
+      colour=Species, #couleur
+      size=Sepal.Length,
+      geom=c("point","smooth"), #le graphique
+      group=1
+)
+```
+
+--- &twocol
+*** =left
+Avec une courbe de regression y~x par espèces
+
+```{r,out.width="500px",eval=F}
+# qp+geom_smooth(method="lm",aes(group=Species))
+# Ou bien
+qplot(Petal.Width, #x
+      Petal.Length, #y
+      data=iris, #les données
+      colour=Species, #couleur
+      size=Sepal.Length,
+      geom=c("point","smooth"), #le graphique
+      group=Species
+)
+```
+*** =right
+```{r,out.width="500px",echo=F,eval=T}
+
+qplot(Petal.Width, #x
+      Petal.Length, #y
+      data=iris, #les données
+      colour=Species, #couleur
+      size=Sepal.Length,
+      geom=c("point","smooth"), #le graphique
+      group=Species
+)
+```
+
+---
+On veut étudier la distribution de Petal.Width avec un boxplot
+
+```{r,out.width="500px"}
+qplot(y=Petal.Width,x=1,data=iris,geom=c("boxplot"))
+# ggplot(data=iris,aes(x=1,y=Petal.Width))+geom_boxplot()
+```
+
+---
+On veut étudier les quantiles de Petal.Width avec un boxplot, pour chaque espèce
+
+```{r,out.width="500px"}
+qplot(data=iris,x=Species,y=Petal.Width,geom="boxplot")
+```
+
+---
+On veut étudier la distribution de Petal.Width avec un barplot, pour chaque espèce
+
+```{r,out.width="500px"}
+qplot(data=iris,x=Petal.Width,fill=Species,geom="bar")
+```
+
+---
+On veut étudier la distribution de Petal.Width avec un barplot, conditionné par espèce (facet)
+
+```{r,out.width="500px"}
+qplot(data=iris,x=Petal.Width,fill=Species,geom="bar",facets=Species~.)
+```
+
+--- &radio
+Analyser les quantiles de Petal.Width avec un boxplot, coloré différemment pour chaque espèce, sur lequel vous superposez les points.
+
+
+*** .explanation
+```{r,eval=F}
+qplot(data=iris,x=Species,y=Petal.Width,fill=Species,geom=c("boxplot","point"))
+qplot(data=iris,x=Species,y=Petal.Width,fill=Species,geom=c("boxplot","jitter"))
+
+```
+
+
+--- Analyse de contingence
+On veut tracer le nombre d'observations ayant des pétales de plus de 1.25 par espèces avec un bar plot
+
+nb_especes=as.data.frame(table(subset(iris,Petal.Width>=1.25)$Species))
+qplot(data=nb_especes,x=Var1,y=Freq,geom="bar",stat='identity',xlab="Species",ylab="Frequence")
+
+
+--- .segue .nobackground .dark
+
+## GGBio
+
+---
+## GGBio
+* La syntaxe de ggplot a rapidement rencontré un vif succés chez les analystes
+* Elle a inspiré `ggbio` qui exploite ggplot pour offrir des fonctionalités de type Genome Browser
+* Adapté aux données NGS (SAM,gff,VCF etc.) tel que représentées dans R (GRanges, GAlignements etc.)
+* Un grand nombre d'exemples fournis sur le [site de ggbio](http://www.tengfei.name/ggbio/docs/man/autoplot-method.html)
+* La fonction `autoplot` marche souvent très bien
+
+---
+## GGBio
+Données aléatoires
+
+
+library(ggbio)
+library(GenomicRanges)
+set.seed(1); N <- 100;
+gr <- GRanges(seqnames = sample(c("chr1", "chr2", "chr3"), size = N, replace = TRUE),
+			  IRanges(start = sample(1:300, size = N, replace = TRUE),
+			  	width = sample(70:75, size = N,replace = TRUE)),
+			  strand = sample(c("+", "-"), size = N, replace = TRUE),
+			  value = rnorm(N, 10, 3),
+			  score = rnorm(N, 100, 30),
+			  sample = sample(c("Normal", "Tumor"), size = N, replace = TRUE),
+			  pair = sample(letters, size = N, replace = TRUE))
+
+---
+autoplot pour les ranges
+
+autoplot(gr, aes( fill = sample), facets = strand ~ seqnames)
+
+
+---
+autoplot pour la couverture
+
+autoplot(gr, aes(color = strand, fill = strand), facets = strand ~ seqnames, stat = "coverage")
+
+--- Alignement et variants
+Trois fichiers d'entrées:
+* Reads alignés (BAM)
+* Variants (VCF)
+* transcrits (GFF3)
+
+
+library(rtracklayer); library(GenomicFeatures); library(Rsamtools); library(VariantAnnotation)
+library(GenomicAlignments)
+ga <- readGAlignmentsFromBam("../../data/variants_example/SRR064167.fastq.bam", use.names=TRUE,
+							param=ScanBamParam(which=GRanges("Chr5", IRanges(4000, 8000))))
+vcf <- readVcf(file="../../data/variants_example/varianttools_gnsap.vcf", genome="ATH1")
+txdb <- makeTranscriptDbFromGFF(file="../../data/variants_example/TAIR10_GFF3_trunc.gff", format="gff3")
+
+
+<div class='source'>Nous reviendrons à ces formats cet après-midi! Exemple de Thomas Girke</div>
+
+---
+autoplot des 4 tracks
+
+p1 <- autoplot(ga, geom = "rect")
+p1
+
+
+---
+autoplot des 4 tracks
+
+p2 <- autoplot(ga, geom = "line", stat = "coverage")
+p2
+
+---
+autoplot des 4 tracks
+
+p3 <- autoplot(vcf[seqnames(vcf)=="Chr5"], type = "fixed") + xlim(4000, 8000) + theme(legend.position = "none", axis.text.y = element_blank(), axis.ticks.y=eleme
+nt_blank())
+p3
+
+---
+autoplot des 4 tracks
+
+```{r,out.width="500px"}
+# p4 <- autoplot(txdb, which=GRanges("Chr5", IRanges(4000, 8000)), names.expr = "gene_id")
+# p4
+```
+* Bug dans la version actuelle de ggbio, devrait être corrigé bientôt!
+
+---
+autoplot des 4 tracks simultanées
+
+# tracks(Reads=p1, Coverage=p2, Variant=p3, Transcripts=p4, heights = c(0.3, 0.2, 0.1, 0.35)) + ylab("")
+tracks(Reads=p1, Coverage=p2, Variant=p3, heights = c(0.3, 0.2, 0.1)) + ylab("")
+
+
+---
+A voir aussi:
+* [Gviz](http://www.bioconductor.org/packages/devel/bioc/html/Gviz.html)
+* [RCircos](http://cran.us.r-project.org/web/packages/RCircos/index.html)
+* [GenomeGraphs](http://bioconductor.org/packages/release/bioc/html/GenomeGraphs.html)
+* [GenoPlotR](http://genoplotr.r-forge.r-project.org)
