@@ -95,9 +95,14 @@ jobs:
       - name: Install Roxygen2
         run: install.packages("roxygen2")
         shell: Rscript {0}
+      - name: Create dummy file for documentation
+        run: |
+          echo "Package: ${{ github.repository }}\nVersion: 1.0.0\n" > DECSRIPTION
       - name: Render doc
         run: roxygen2::roxygenize()
         shell: Rscript {0}
+      - name: Remove dummy file
+        run: rm DECSRIPTION
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
         with:
@@ -115,6 +120,7 @@ jobs:
       - name: Render Rmarkdown files
         run: |
           RMD_PATH=($(ls src/ | grep '[.]Rmd$'))
+          echo $RMD_PATH
           Rscript -e 'for (f in commandArgs(TRUE)) if (file.exists(f)) rmarkdown::render(f)' ${RMD_PATH[*]}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
