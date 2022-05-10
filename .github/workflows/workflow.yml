@@ -97,10 +97,10 @@ jobs:
         shell: Rscript {0}
       - name: Render doc
         run: |
-          echo "Package: ${{ github.repository }} \nVersion: 1.0.0\n" > DECSRIPTION
+          echo "Package: ${{ github.repository }} \nVersion: 1.0.0" > DESCRIPTION
           Rscript -e roxygen2::roxygenize()
       - name: Remove dummy file
-        run: rm DECSRIPTION
+        run: rm DESCRIPTION
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
         with:
@@ -116,10 +116,8 @@ jobs:
         run: install.packages("rmarkdown")
         shell: Rscript {0}
       - name: Render Rmarkdown files
-        run: |
-          RMD_PATH=($(ls src/ | grep '[.]Rmd$'))
-          echo $RMD_PATH
-          Rscript -e rmarkdown::render('src/plot.Rmd')
+        run: markdown::render('src/plot.Rmd')
+        shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
         with:
