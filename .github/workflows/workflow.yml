@@ -116,7 +116,7 @@ jobs:
         run: install.packages("rmarkdown")
         shell: Rscript {0}
       - name: Render Rmarkdown files
-        run: markdown::render('src/plot.Rmd')
+        run: rmarkdown::render('src/plot.Rmd')
         shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
