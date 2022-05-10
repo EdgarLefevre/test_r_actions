@@ -77,7 +77,6 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
     steps:
       - uses: actions/checkout@v3
-      - uses: r-lib/actions/setup-pandoc@v2
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
@@ -102,13 +101,13 @@ jobs:
         run: install.packages("roxygen2")
         shell: Rscript {0}
       - name: Render doc
-        run: roxygen2::roxygenize_dir(path = "src/")
+        run: roxygen2::roxygenize()
         shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
         with:
           commit_message: ":construction_worker: Rendering documentation."
-  Render--Rmd:
+  Render-Rmd:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -118,7 +117,8 @@ jobs:
         shell: Rscript {0}
       - name: Render Rmarkdown files
         run: |
-          RMD_PATH=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '[.]Rmd$'))
+#          RMD_PATH=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '[.]Rmd$'))
+          RMD_PATH=($(ls src/ | grep '[.]Rmd$'))
           Rscript -e 'for (f in commandArgs(TRUE)) if (file.exists(f)) rmarkdown::render(f)' ${RMD_PATH[*]}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
