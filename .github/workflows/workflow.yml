@@ -116,7 +116,7 @@ jobs:
         shell: Rscript {0}
       - name: Render Rmarkdown files
         run: |
-          rmarkdown::render("src/plot.Rmd")
+          rmarkdown::render("R/plot.Rmd")
         shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
