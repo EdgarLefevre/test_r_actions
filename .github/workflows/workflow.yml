@@ -95,10 +95,11 @@ jobs:
       - name: Install Roxygen2
         run: install.packages("roxygen2")
         shell: Rscript {0}
+      - name: Dummy DESCRIPTION file
+        run: echo "Package: ${{ github.repository }} \nVersion: 1.0.0" > DESCRIPTION
       - name: Render doc
-        run: |
-          echo "Package: ${{ github.repository }} \nVersion: 1.0.0" > DESCRIPTION
-          Rscript -e roxygen2::roxygenize()
+        run: roxygen2::roxygenize()
+        shell: Rscript {0}
       - name: Remove dummy file
         run: rm DESCRIPTION
       - uses: stefanzweifel/git-auto-commit-action@v4
@@ -116,7 +117,7 @@ jobs:
         run: install.packages("rmarkdown")
         shell: Rscript {0}
       - name: Render Rmarkdown files
-        run: rmarkdown::render('src/plot.Rmd')
+        run: rmarkdown::render('src/')
         shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
