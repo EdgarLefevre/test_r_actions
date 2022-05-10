@@ -95,14 +95,9 @@ jobs:
       - name: Install Roxygen2
         run: install.packages("roxygen2")
         shell: Rscript {0}
-      - name: Dummy DESCRIPTION file
-        run: |
-          echo "Package: Test\nVersion: 0.0.1\n" > DESCRIPTION
       - name: Render doc
         run: roxygen2::roxygenize()
         shell: Rscript {0}
-      - name: Remove dummy file
-        run: rm DESCRIPTION
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
         with:
