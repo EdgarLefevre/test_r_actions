@@ -1,0 +1,17 @@
+Package: my-new-project
+Title: My New Project
+Version: 0.1
+Authors@R:
+    person("Edgar", "Lefevre", lefevreedg@gmail.com, role = c("aut", "cre"))
+Description: Test for cookiecutter
+License: `use_mit_license()`
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Imports:
+    stringr
+    testthat
+    tidyverse
+    biomaRt
+    patchwork
+    RColorBrewer
