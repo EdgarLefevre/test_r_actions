@@ -1,10 +1,5 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/master/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
-
 name: Workflow
-
 on: [push, pull_request]
-
 jobs:
   style:
     runs-on: ubuntu-latest
@@ -119,7 +114,6 @@ jobs:
         shell: Rscript {0}
       - name: Render Rmarkdown files
         run: |
-#          RMD_PATH=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '[.]Rmd$'))
           RMD_PATH=($(ls src/ | grep '[.]Rmd$'))
           Rscript -e 'for (f in commandArgs(TRUE)) if (file.exists(f)) rmarkdown::render(f)' ${RMD_PATH[*]}
       - uses: stefanzweifel/git-auto-commit-action@v4
