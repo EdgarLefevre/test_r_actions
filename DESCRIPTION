@@ -16,4 +16,5 @@ Imports:
     patchwork,
     RColorBrewer,
     ggplot2,
-    rmarkdown
+    rmarkdown,
+    ggbio
