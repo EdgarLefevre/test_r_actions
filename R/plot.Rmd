@@ -228,7 +228,7 @@ legend('topright',levels(iris$Species),cex=0.7,col=colors,pch=20)
 On prépare les données en les résumant a des moyennes et en selectionnant les concentrations environnantes:
 ```{r }
 co2_chilled=CO2 %>% group_by(Type,Treatment,conc) %>%
-  summarize(mean_uptake=mean(uptake),sd_uptake=sd(uptake),mean_plus_sd=mean_uptake+sd_uptake) %>% filter(Treatment=="chilled",conc<=350)
+  summarize(mean_uptake=mean(uptake),sd_uptake=sd(uptake),mean_plus_sd=mean_uptake+sd_uptake) %>% filtestats::r(Treatment=="chilled",conc<=350)
 ```
 On transforme ce tableau en un tableau en colonne de type matrice:
 ```{r,out.width="100px"}
@@ -323,7 +323,7 @@ boxplot(CO2$uptake ~ CO2$Type*CO2$Treatment,col="dodgerblue4")
 colors = c("dodgerblue","firebrick2")
 
 sorted_co2_chilled=CO2 %>%
-	filter(Treatment=="chilled") %>%
+	stats::filter(Treatment=="chilled") %>%
 	arrange(uptake)
 
 with(sorted_co2_chilled,
@@ -337,7 +337,7 @@ with(sorted_co2_chilled,
 colors = c("dodgerblue","firebrick2")
 
 sorted_co2_chilled=CO2 %>%
-	filter(Treatment=="chilled") %>%
+	stats::filter(Treatment=="chilled") %>%
 	arrange(uptake)
 
 with(sorted_co2_chilled,
@@ -356,11 +356,11 @@ with(sorted_co2_chilled,
 colors = c("dodgerblue","firebrick2")
 
 sorted_co2_chilled=CO2 %>%
-	filter(Treatment=="chilled") %>%
+	stats::filter(Treatment=="chilled") %>%
 	arrange(uptake)
 
 sorted_co2_non_chilled=CO2 %>%
-	filter(Treatment=="nonchilled") %>%
+	stats::filter(Treatment=="nonchilled") %>%
 	arrange(uptake)
 
 par(mfrow=c(1,2))
@@ -380,11 +380,11 @@ with(sorted_co2_non_chilled,
 colors = c("dodgerblue","firebrick2")
 
 sorted_co2_chilled=CO2 %>%
-	filter(Treatment=="chilled") %>%
+	stats::filter(Treatment=="chilled") %>%
 	arrange(uptake)
 
 sorted_co2_non_chilled=CO2 %>%
-	filter(Treatment=="nonchilled") %>%
+	stats::filter(Treatment=="nonchilled") %>%
 	arrange(uptake)
 
 par(mfrow=c(1,2))
