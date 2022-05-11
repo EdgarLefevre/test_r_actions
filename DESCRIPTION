@@ -13,4 +13,5 @@ Imports:
     testthat,
     ggplot2,
     rmarkdown,
-    ggbio
+    ggbio,
+    tibble
