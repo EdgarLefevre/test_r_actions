@@ -65,4 +65,3 @@ if (equi_id == "ensembl_gene_id_version") {
 } else if (equi_id == "ensembl_gene_id") {
   print(paste(equi_id, "used ensembl_gene_id, no further query for rowdatadf"))
 }
-
