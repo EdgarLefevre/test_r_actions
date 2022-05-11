@@ -67,14 +67,14 @@ if (equi_id == "ensembl_gene_id_version") {
 }
 
 ########### NEW : check symbols that were not retrieved, use ncbi ###############
-nosym_db <- bm_sp %>% filter(is.na(external_gene_name) | external_gene_name == "")
+nosym_db <- bm_sp %>% stats::filter(is.na(external_gene_name) | external_gene_name == "")
 # note: ncbi use only ensembl_gene_id (NEVER: _version)
 opn <- save_ncbi_hits(nosym_db$ensembl_gene_id, shortname) # saves or get if done
 
 nosymbol.here <- rowdatadf %>%
-  filter(is.na(external_gene_name) | external_gene_name == "")
+  stats::filter(is.na(external_gene_name) | external_gene_name == "")
 
-ncbi.here <- opn %>% filter(ENSEMBL %in% nosymbol.here$ensembl_gene_id)
+ncbi.here <- opn %>% stats::filter(ENSEMBL %in% nosymbol.here$ensembl_gene_id)
 print(dim(ncbi.here))
 
 K <- rowdatadf
