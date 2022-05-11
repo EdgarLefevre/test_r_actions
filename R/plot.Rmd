@@ -13,7 +13,7 @@ url:
 widgets     : [mathjax,quiz,bootstrap]            # {mathjax, quiz, bootstrap}
 mode        : selfcontained # {standalone, draft}
 
-
+---
 # Données exemples
 Nous allons illustrer les différents graphiques possibles à l'aide du jeu de données `data(CO2)` fourni avec R. Il s'agit de la consommation de $CO_2$ de 6 plant
 es du Quebec et de six plantes du Mississippi en fonction de la concentration en $CO_2$ ambient et dont la moitié furent congelées la veille.
