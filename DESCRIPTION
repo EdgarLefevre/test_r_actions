@@ -11,9 +11,6 @@ RoxygenNote: 7.1.2
 Imports:
     stringr,
     testthat,
-    biomaRt,
-    patchwork,
-    RColorBrewer,
     ggplot2,
     rmarkdown,
     ggbio
