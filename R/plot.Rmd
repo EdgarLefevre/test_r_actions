@@ -3,7 +3,6 @@ title       : Analyse Exploratoire de Données ; Graphiques
 subtitle    : Formation NGS avec R - Octobre 2016
 author      : Elodie Darbo, Aurélien Barré
 job         : Centre de Bioinformatique de Bordeaux
-logo        : Logo_bleu.png
 framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
 hitheme     : default      #
@@ -404,15 +403,7 @@ with(sorted_co2_non_chilled,
 
 ## Gaphiques: ggplot2 / qplot
 
----
-## GGPlot
-* Implémentation de la langue des graphiques (_language of graphics_)
-* Abstraction du processus de construction d'un graphique
-<center>
-<img class=center src="../../assets/img/gg_overview.png" width=550px />
-</center>
 
----
 ## GGPlot
 * Particulièrement adapté au prototypage de figures exploratoires pour données multi-variées
 	* Déterminer les groupes de données
