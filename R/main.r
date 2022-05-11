@@ -7,5 +7,3 @@
 # note : obj@row_data may have symbol_unique but empty external_gene_name:
 #                      because when symbol retrieved by ncbi , not biomart.
 # johaGL 2022
-
-
