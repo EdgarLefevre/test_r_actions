@@ -101,7 +101,7 @@ jobs:
           extra-packages: any::roxygen2
           needs: roxygen2
       - name: Document
-        run: roxygen2::roxygenise()
+        run: roxygen2::roxygenise(clean=TRUE)
         shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
