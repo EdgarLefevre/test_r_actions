@@ -122,7 +122,7 @@ jobs:
         uses: r-lib/actions/setup-r-dependencies@v2
       - name: Render Rmarkdown files
         run: |
-          rmarkdown::render("R/plot.Rmd")
+          rmarkdown::render("R/plot.Rmd", output_dir="html/")
         shell: Rscript {0}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
