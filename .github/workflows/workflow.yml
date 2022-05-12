@@ -103,6 +103,7 @@ jobs:
       - name: Document
         run: roxygen2::roxygenise(clean=TRUE)
         shell: Rscript {0}
+      - run: rm NAMESPACE
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
         with:
@@ -124,6 +125,9 @@ jobs:
         run: |
           rmarkdown::render("R/plot.Rmd", output_dir="html/")
         shell: Rscript {0}
+      - run: |
+          rm .R*
+          rm -rf renv/
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: autocommit
         with:
